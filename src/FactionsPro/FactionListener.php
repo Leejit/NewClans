@@ -19,22 +19,22 @@ use pocketmine\event\player\PlayerMoveEvent;
 use pocketmine\event\block\BlockPlaceEvent;
 use pocketmine\event\player\PlayerDeathEvent;
 class FactionListener implements Listener {
-	
+
 	public $plugin;
-	
+
 	public function __construct(FactionMain $pg) {
 		$this->plugin = $pg;
 	}
-	
+
 	public function factionChat(PlayerChatEvent $PCE) {
-		
+
 		$player = $PCE->getPlayer()->getName();
 		//MOTD Check
 		//TODO Use arrays instead of database for faster chatting?
-		
+
 		if($this->plugin->motdWaiting($player)) {
 			if(time() - $this->plugin->getMOTDTime($player) > 30) {
-				$PCE->getPlayer()->sendMessage($this->plugin->formatMessage("Timed out. Please use /f desc again."));
+				$PCE->getPlayer()->sendMessage($this->plugin->formatMessage("Timed out. Please use /c motd again."));
 				$this->plugin->db->query("DELETE FROM motdrcv WHERE player='$player';");
 				$PCE->setCancelled(true);
 				return true;
@@ -43,7 +43,7 @@ class FactionListener implements Listener {
 				$faction = $this->plugin->getPlayerFaction($player);
 				$this->plugin->setMOTD($faction, $player, $motd);
 				$PCE->setCancelled(true);
-				$PCE->getPlayer()->sendMessage($this->plugin->formatMessage("Successfully updated the faction description. Type /f info.", true));
+				$PCE->getPlayer()->sendMessage($this->plugin->formatMessage("Successfully updated the faction description. Type /c info.", true));
 			}
 			return true;
 		}
@@ -79,7 +79,7 @@ class FactionListener implements Listener {
 			}
 		}
 	}
-	
+
 	public function factionPVP(EntityDamageEvent $factionDamage) {
 		if($factionDamage instanceof EntityDamageByEntityEvent) {
 			if(!($factionDamage->getEntity() instanceof Player) or !($factionDamage->getDamager() instanceof Player)) {
@@ -105,19 +105,19 @@ class FactionListener implements Listener {
 				return true;
 			} else {
 				$event->setCancelled(true);
-				$event->getPlayer()->sendMessage($this->plugin->formatMessage("You cannot break blocks here. This is already a property of a faction. Type /f plotinfo for details."));
+				$event->getPlayer()->sendMessage($this->plugin->formatMessage("You cannot break blocks here. This is property of a clan. Type /c pos for details."));
 				return true;
 			}
 		}
 	}
-	
+
 	public function factionBlockPlaceProtect(BlockPlaceEvent $event) {
 		if($this->plugin->isInPlot($event->getPlayer())) {
 			if($this->plugin->inOwnPlot($event->getPlayer())) {
 				return true;
 			} else {
 				$event->setCancelled(true);
-				$event->getPlayer()->sendMessage($this->plugin->formatMessage("You cannot place blocks here. This is already a property of a faction. Type /f plotinfo for details."));
+				$event->getPlayer()->sendMessage($this->plugin->formatMessage("You cannot place blocks here. This is property of a clan. Type /c pos for details."));
 				return true;
 			}
 		}
@@ -148,7 +148,7 @@ class FactionListener implements Listener {
                 $f = $this->plugin->getPlayerFaction($e);
                 $e = $this->plugin->prefs->get("PowerGainedPerKillingAnEnemy");
                 if($ent->getLastDamageCause() instanceof EntityDamageByEntityEvent && $ent->getLastDamageCause()->getDamager() instanceof Player){
-                    if($this->plugin->isInFaction($ent->getLastDamageCause()->getDamager()->getPlayer()->getName())){      
+                    if($this->plugin->isInFaction($ent->getLastDamageCause()->getDamager()->getPlayer()->getName())){
                         $this->plugin->subtractFactionPower($f,$e*2);
                     } else {
                         $this->plugin->subtractFactionPower($f,$e);
@@ -157,7 +157,7 @@ class FactionListener implements Listener {
             }
         }
     }
-    
+
 	public function onPlayerJoin(PlayerJoinEvent $event) {
 		$this->plugin->updateTag($event->getPlayer()->getName());
 	}

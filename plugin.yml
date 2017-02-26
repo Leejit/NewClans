@@ -5,10 +5,10 @@ version: 1.3.7.AWZ
 main: FactionsPro\FactionMain
 api: [2.0.0, 3.0.0-ALPHA1]
 commands:
-  f:
-    description: use /f help for all parameters
-    permission: f.command
+  c:
+    description: use /c help for all parameters
+    permission: c.command
 permissions:
-  f.command:
+  c.command:
     default: true
-    description: "Allow use of all faction commands"
+    description: "Allow use of all clan commands"
