@@ -2,6 +2,7 @@
 
 namespace FactionsPro;
 
+use onebone\economyapi\EconomyAPI;
 use pocketmine\plugin\PluginBase;
 use pocketmine\command\CommandSender;
 use pocketmine\command\Command;
@@ -227,10 +228,8 @@ class FactionCommands {
                         $result = $stmt->execute();
                         $sender->sendMessage($this->plugin->formatMessage("§b$invitedName §ahas been invited§r", true));
                         $invited->sendMessage($this->plugin->formatMessage("§bYou have been invited to§a $factionName.§b Type§e '/c yes' §bor§e '/c no'§b into chat to accept or deny!§r", true));
-                      } else {
-							          $sender->sendMessage($this->plugin->formatMessage("§cPlayer is offline§r"));
-						          }
-					          }
+                      }
+		  }
 
                     /////////////////////////////// LEADER ///////////////////////////////
 
@@ -648,7 +647,7 @@ class FactionCommands {
                                 } else {
                                     if ($faction_ours_power < $faction_victim_power) {
                                         $sender->sendMessage($this->plugin->formatMessage("You can't overclaim the plot of $faction_victim because your power is lower than theirs."));
-                                        return true
+                                        return true;
                                     } elseif($r = EconomyAPI::getInstance()->reduceMoney($player, $oclaim))
 									   {
                                         $this->plugin->db->query("DELETE FROM plots WHERE faction='$faction_ours';");
