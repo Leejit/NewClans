@@ -994,7 +994,8 @@ class FactionCommands {
                             $row[$i]['player'] = $resultArr['player'];
                             $p = $this->plugin->getServer()->getPlayerExact($row[$i]['player']);
                             if ($p instanceof Player) {
-                                $p->sendMessage("§f[§bClanChat§f] §a$rank$player""§o§e$message§r");
+                              $p->sendMessage(TextFormat::ITALIC . TextFormat::RED . "<FM>" . TextFormat::AQUA . " <$rank$f> " . TextFormat::GREEN . "<$player> " . ": " . TextFormat::RESET);
+                              $p->sendMessage(TextFormat::ITALIC . TextFormat::DARK_AQUA . $message . TextFormat::RESET);
                             }
                         }
                     }
