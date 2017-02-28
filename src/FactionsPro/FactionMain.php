@@ -76,7 +76,7 @@ class FactionMain extends PluginBase implements Listener {
             "AllyLimitPerFaction" => 5,
             "TheDefaultPowerEveryFactionStartsWith" => 0,
             "EnableOverClaim" => true,
-            "ClaimWorlds" => []
+            "ClanWorlds" => []
         ));
         $this->db = new \SQLite3($this->getDataFolder() . "FactionsPro.db");
         $this->db->exec("CREATE TABLE IF NOT EXISTS master (player TEXT PRIMARY KEY COLLATE NOCASE, faction TEXT, rank TEXT);");
