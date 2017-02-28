@@ -1,4 +1,4 @@
-<?php
+ClanWorlds<?php
 
 namespace FactionsPro;
 
@@ -486,8 +486,8 @@ class FactionCommands {
                             $sender->sendMessage($this->plugin->formatMessage("§cYou must be leader to use this.§r"));
                             return true;
                         }
-                        if (!in_array($sender->getPlayer()->getLevel()->getName(), $this->plugin->prefs->get("ClaimWorlds"))) {
-                            $sender->sendMessage($this->plugin->formatMessage("§cYou can only claim in clan Worlds: " . implode(" ", $this->plugin->prefs->get("ClaimWorlds"))));
+                        if (!in_array($sender->getPlayer()->getLevel()->getName(), $this->plugin->prefs->get("ClanWorlds"))) {
+                            $sender->sendMessage($this->plugin->formatMessage("§cYou can only do this in: " . implode(" ", $this->plugin->prefs->get("ClanWorlds"))));
                             return true;
                         }
 
@@ -826,6 +826,10 @@ class FactionCommands {
                             $sender->sendMessage($this->plugin->formatMessage("§cYou must be leader to set home§r"));
                             return true;
                         }
+                        if (!in_array($sender->getPlayer()->getLevel()->getName(), $this->plugin->prefs->get("ClanWorlds"))) {
+                            $sender->sendMessage($this->plugin->formatMessage("§cYou can only do this in: " . implode(" ", $this->plugin->prefs->get("ClanWorlds"))));
+                            return true;
+                        }
 						            elseif($r = EconomyAPI::getInstance()->reduceMoney($player, $home)){
                         $factionName = $this->plugin->getPlayerFaction($sender->getName());
                         $stmt = $this->plugin->db->prepare("INSERT OR REPLACE INTO home (faction, x, y, z) VALUES (:faction, :x, :y, :z);");
@@ -994,7 +998,8 @@ class FactionCommands {
                             $row[$i]['player'] = $resultArr['player'];
                             $p = $this->plugin->getServer()->getPlayerExact($row[$i]['player']);
                             if ($p instanceof Player) {
-                              $p->sendMessage("§f[§bClanChat§f] $rank$f§b$player" . $message . TextFormat::RESET);
+                              $p->sendMessage(TextFormat::ITALIC . TextFormat::RED . "<FM>" . TextFormat::AQUA . " <$rank$f> " . TextFormat::GREEN . "<$player> " . ": " . TextFormat::RESET);
+                              $p->sendMessage(TextFormat::ITALIC . TextFormat::DARK_AQUA . $message . TextFormat::RESET);
                             }
                         }
                     }
