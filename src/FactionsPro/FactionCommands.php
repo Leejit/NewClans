@@ -275,7 +275,7 @@ class FactionCommands {
 
                         $sender->sendMessage($this->plugin->formatMessage("§aYou are no longer leader§r", true));
                         $this->plugin->getServer()->getPlayerExact($args[1])->sendMessage($this->plugin->formatMessage("§bYou are now leader \n§bof§a $factionName!§r", true));
-                        
+
                     }
 
                     /////////////////////////////// PROMOTE ///////////////////////////////
@@ -869,6 +869,10 @@ return true;
                     if (strtolower($args[0] == "home")) {
                         if (!$this->plugin->isInFaction($player)) {
                             $sender->sendMessage($this->plugin->formatMessage("§cYou must be in a clan to do this§r"));
+                            return true;
+                        }
+                        if (!in_array($sender->getPlayer()->getLevel()->getName(), $this->plugin->prefs->get("ClanWorlds"))) {
+                            $sender->sendMessage($this->plugin->formatMessage("§cYou can only do this in: " . implode(" ", $this->plugin->prefs->get("ClanWorlds"))));
                             return true;
                         }
                         $faction = $this->plugin->getPlayerFaction($sender->getName());
