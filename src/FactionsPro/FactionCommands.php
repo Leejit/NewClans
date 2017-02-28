@@ -57,7 +57,7 @@ class FactionCommands {
                                 if ($r == $fac) {
                                     $x = mt_rand(0, $this->plugin->getNumberOfPlayers($fac) - 1);
                                     $tper = $this->plugin->war_players[$f][$x];
-                                    $sender->teleport($this->plugin->getServer()->getPlayerByName($tper));
+                                    $sender->teleport($this->plugin->getServer()->getPlayer($tper));
                                     return;
                                 }
                                 if ($f == $fac) {
@@ -162,7 +162,6 @@ class FactionCommands {
                             $result = $stmt->execute();
                             $this->plugin->updateAllies($factionName);
                             $this->plugin->setFactionPower($factionName, $this->plugin->prefs->get("TheDefaultPowerEveryFactionStartsWith"));
-                            $this->plugin->updateTag($sender->getName());
                             $sender->sendMessage($this->plugin->formatMessage("§aClan successfully created§r", true));
                             return true;
                         }
@@ -276,8 +275,7 @@ class FactionCommands {
 
                         $sender->sendMessage($this->plugin->formatMessage("§aYou are no longer leader§r", true));
                         $this->plugin->getServer()->getPlayerExact($args[1])->sendMessage($this->plugin->formatMessage("§bYou are now leader \n§bof§a $factionName!§r", true));
-                        $this->plugin->updateTag($sender->getName());
-                        $this->plugin->updateTag($this->plugin->getServer()->getPlayerExact($args[1])->getName());
+                        
                     }
 
                     /////////////////////////////// PROMOTE ///////////////////////////////
@@ -319,7 +317,6 @@ class FactionCommands {
 
                         if ($player instanceof Player) {
                             $player->sendMessage($this->plugin->formatMessage("§bYou were promoted to officer of §a$factionName!§r", true));
-                            $this->plugin->updateTag($this->plugin->getServer()->getPlayerExact($args[1])->getName());
                             return true;
                         }
                     }
@@ -362,7 +359,6 @@ class FactionCommands {
                         $sender->sendMessage($this->plugin->formatMessage("§a$args[1] §bhas been demoted to Member§r", true));
                         if ($player instanceof Player) {
                             $player->sendMessage($this->plugin->formatMessage("§cYou were demoted to member of§a $factionName!§r", true));
-                            $this->plugin->updateTag($this->plugin->getServer()->getPlayerExact($args[1])->getName());
                             return true;
                         }
                     }
@@ -398,7 +394,6 @@ class FactionCommands {
 
                         if ($kicked instanceof Player) {
                             $kicked->sendMessage($this->plugin->formatMessage("§cYou have been kicked from \n §a$factionName §r", true));
-                            $this->plugin->updateTag($this->plugin->getServer()->getPlayerExact($args[1])->getName());
                             return true;
                         }
                     }
@@ -453,7 +448,7 @@ class FactionCommands {
                             return true;
                         }
                         if ($args[1] == 2) {
-                            $sender->sendMessage("§f====§bClans Help (2/5)§f====" . TextFormat::WHITE . "\n§e/c home\n§e/c help <page>\n§e/c info\n§e/c info <clan>\n§e/c invite <player>\n§e/c kick <player>\n§e/c gievto <player>\n§e/c leave");
+                            $sender->sendMessage("§f====§bClans Help (2/5)§f====" . TextFormat::WHITE . "\n§e/c home\n§e/c help <page>\n§e/c info\n§e/c info <clan>\n§e/c invite <player>\n§e/c kick <player>\n§e/c giveto <player>\n§e/c leave");
                             return true;
                         }
                         if ($args[1] == 3) {
@@ -461,14 +456,14 @@ class FactionCommands {
                             return true;
                         }
                         if ($args[1] == 4) {
-                            $sender->sendMessage("§f====§bClans Help (4/5)§f====" . TextFormat::WHITE . "\n§e/c motd\n§e/c promote <player>\n§e/c ally <clan> §f[Request for an ally for §6$$allyr]\n§e/c unally <clan>\n§e\n§e/c allyok §f[Accept a request for alliance and earn §6$$allya]\n§e/c allyno §f[Deny a request for alliance]\n§e/c allies <clan> §f[See allies of a clan]");
+                            $sender->sendMessage("§f====§bClans Help (4/5)§f====" . TextFormat::WHITE . "\n§e/c motd\n§e/c promote <player>\n§e/c ally <clan> §f[Request for an ally for §6$$allyr]\n§e/c unally <clan>\n§e/c enemy <clan> §f[Become Enemies with Clan]\n§e/c allyok §f[Accept a request for alliance and earn §6$$allya]\n§e/c allyno §f[Deny a request for alliance]\n§e/c allies <clan> §f[See allies of a clan]");
                             return true;
                         }
                         if ($args[1] == 5) {
-                            $sender->sendMessage("§f====§bClans Help (5/5)§f====" . TextFormat::WHITE . "\n§e/c membersof <clan>\n§e/c officersof <clan>\n§e/c leaderof <clan>\n§e/c c <private chat your clan members>\n§e/c pc <player>\n§e/c tops");
+                            $sender->sendMessage("§f====§bClans Help (5/5)§f====" . TextFormat::WHITE . "\n§e/c membersof <clan>\n§e/c officersof <clan>\n§e/c leaderof <clan>\n§e/c c <private chat your clan members>\n§e/c pc <player>\n§e/c top");
                             return true;
                         } else {
-                            $sender->sendMessage("§f====§bClans Help (OP)§f====" . TextFormat::WHITE . "\n§e/c forceunclaim <clan> §f[Unclaim a clan plot by force - OP]\n§e\n§e/c forcedelete <clan> §f[Delete a clan by force - OP]\n§e/c addpowerto <clan> <power> §f[Add positive/negative power to a clan - OP]");
+                            $sender->sendMessage("§f====§bClans Help (OP)§f====" . TextFormat::WHITE . "\n§e/c forceunclaim <clan> §f[Unclaim a clan plot by force - OP]\n§e/c forcedelete <clan> §f[Delete a clan by force - OP]\n§e/c addpowerto <clan> <power> §f[Add positive/negative power to a clan - OP]");
                             return true;
                         }
                     }
@@ -515,8 +510,7 @@ class FactionCommands {
                         $y = floor($sender->getY());
                         $z = floor($sender->getZ());
                         if ($this->plugin->drawPlot($sender, $faction, $x, $y, $z, $sender->getPlayer()->getLevel(), $this->plugin->prefs->get("PlotSize")) == false) {
-
-                            return true;
+return true;
                         }
 
                         $sender->sendMessage($this->plugin->formatMessage("§bGetting your coordinates...§r", true));
@@ -745,7 +739,6 @@ class FactionCommands {
                             $sender->sendMessage($this->plugin->formatMessage("§bYou successfully joined §a$faction", true));
                             $this->plugin->addFactionPower($faction, $this->plugin->prefs->get("PowerGainedPerPlayerInFaction"));
                             $this->plugin->getServer()->getPlayerExact($array["invitedby"])->sendMessage($this->plugin->formatMessage("§a$player §bjoined the clan§r", true));
-                            $this->plugin->updateTag($sender->getName());
                         } else {
                             $sender->sendMessage($this->plugin->formatMessage("§cInvite has timed out§r"));
                             $this->plugin->db->query("DELETE * FROM confirm WHERE player='$player';");
@@ -789,7 +782,6 @@ class FactionCommands {
                                 $this->plugin->db->query("DELETE FROM motd WHERE faction='$faction';");
                                 $this->plugin->db->query("DELETE FROM home WHERE faction='$faction';");
                                 $sender->sendMessage($this->plugin->formatMessage("§aclan successfully disbanded and any clan plots were unclaimed§r", true));
-                                $this->plugin->updateTag($sender->getName());
                             } else {
                                 $sender->sendMessage($this->plugin->formatMessage("§cYou are not leader!§r"));
                             }
@@ -809,7 +801,6 @@ class FactionCommands {
                             $sender->sendMessage($this->plugin->formatMessage("§bYou successfully left§a $faction§r", true));
 
                             $this->plugin->subtractFactionPower($faction, $this->plugin->prefs->get("PowerGainedPerPlayerInFaction"));
-                            $this->plugin->updateTag($sender->getName());
                         } else {
                             $sender->sendMessage($this->plugin->formatMessage("§cYou must delete the clan or give leadership to someone else§r"));
                         }
@@ -970,10 +961,6 @@ class FactionCommands {
                         $this->plugin->getPlayersInFactionByRank($sender, $args[1], "Leader");
                     }
                     if (strtolower($args[0] == "c")) {
-                        if (true) {
-                            $sender->sendMessage($this->plugin->formatMessage("§c/c c is disabled§r"));
-                            return true;
-                        }
                         if (!($this->plugin->isInFaction($player))) {
 
                             $sender->sendMessage($this->plugin->formatMessage("§cYou don't have a clan to send messages to§r"));
@@ -989,7 +976,7 @@ class FactionCommands {
                         } else if ($this->plugin->isLeader($player)) {
                             $rank = "**";
                         }
-                        $message = "; ";
+                        $message = "§f; ";
                         for ($i = 0; $i < $r - 1; $i = $i + 1) {
                             $message = $message . $args[$i + 1] . " ";
                         }
@@ -998,16 +985,16 @@ class FactionCommands {
                             $row[$i]['player'] = $resultArr['player'];
                             $p = $this->plugin->getServer()->getPlayerExact($row[$i]['player']);
                             if ($p instanceof Player) {
-                                $p->sendMessage("§f[§bClanChat§f]§a$rank$player  §o§e$message§r");
+				$p->sendMessage("§f[§bClanChat§f] §e$rank$f §f§b$player $message");
                             }
                         }
                     }
 
 
                     ////////////////////////////// ALLY SYSTEM ////////////////////////////////
-                    if (strtolower($args[0] == "enemywith")) {
+                    if (strtolower($args[0] == "enemy")) {
                         if (!isset($args[1])) {
-                            $sender->sendMessage($this->plugin->formatMessage("§bUsage:§e /c enemywith <clan>§r"));
+                            $sender->sendMessage($this->plugin->formatMessage("§bUsage:§e /c enemy <clan>§r"));
                             return true;
                         }
                         if (!$this->plugin->isInFaction($player)) {
@@ -1257,7 +1244,7 @@ class FactionCommands {
                         $sender->sendMessage(TextFormat::GREEN . "FactionsPro v1.3.2 by " . TextFormat::BOLD . "toomanypeople");
                     }
                     ////////////////////////////// CHAT ////////////////////////////////
-                    if (strtolower($args[0]) == "chat" or strtolower($args[0]) == "c") {
+                    if (strtolower($args[0]) == "chat" or strtolower($args[0]) == "cc") {
 
                         $sender->sendMessage($this->plugin->formatMessage("§cClan chat disabled§r", false));
                         return true;
