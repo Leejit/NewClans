@@ -798,7 +798,7 @@ return true;
                             $faction = $this->plugin->getPlayerFaction($player);
                             $name = $sender->getName();
                             $this->plugin->db->query("DELETE FROM master WHERE player='$name';");
-                            $sender->sendMessage($this->plugin->formatMessage("§bYou successfully left§a $faction§r", true));
+                            $sender->sendMessage($this->plugin->formatMessage("§bYou successfully left§a $faction §r", true));
 
                             $this->plugin->subtractFactionPower($faction, $this->plugin->prefs->get("PowerGainedPerPlayerInFaction"));
                         } else {
@@ -1250,8 +1250,10 @@ return true;
                     ////////////////////////////// CHAT ////////////////////////////////
                     if (strtolower($args[0]) == "chat" or strtolower($args[0]) == "cc") {
 
-                        $sender->sendMessage($this->plugin->formatMessage("§cClan chat disabled§r", false));
-                        return true;
+                        if (!$this->plugin->prefs->get("AllowChat")){
+                            $sender->sendMessage($this->plugin->formatMessage("All Faction chat is disabled", false));
+                          return true;
+                         }
 
                         if ($this->plugin->isInFaction($player)) {
                             if (isset($this->plugin->factionChatActive[$player])) {
@@ -1270,8 +1272,11 @@ return true;
                     }
                     if (strtolower($args[0]) == "allychat" or strtolower($args[0]) == "ac") {
 
-                        $sender->sendMessage($this->plugin->formatMessage("§cClan chat disabled§r", false));
-                        return true;
+                        
+                        if (!$this->plugin->prefs->get("AllowChat")){
+                            $sender->sendMessage($this->plugin->formatMessage("All Faction chat is disabled", false));
+                            return true;
+                        }
 
                         if ($this->plugin->isInFaction($player)) {
                             if (isset($this->plugin->allyChatActive[$player])) {
